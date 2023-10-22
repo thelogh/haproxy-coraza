@@ -1,0 +1,89 @@
+
+# The SPOA server bind address
+bind: 127.0.0.1:9000
+
+# Process request and response with this application if provided app name is not found.
+# You can remove or comment out this config param if you don't need "default_application" functionality.
+default_application: haproxy_waf
+
+applications:
+  haproxy_waf:
+    # Get the coraza.conf from https://github.com/corazawaf/coraza
+    #
+    # Download the OWASP CRS from https://github.com/coreruleset/coreruleset/releases
+    # and copy crs-setup.conf & the rules, plugins directories to /etc/coraza-spoa
+    directives: |
+      Include /etc/coraza-spoa/coraza.conf
+      Include /etc/coraza-spoa/crs-setup.conf
+      Include /etc/coraza-spoa/plugins/*-config.conf
+      Include /etc/coraza-spoa/plugins/*-before.conf
+      Include /etc/coraza-spoa/rules/*.conf
+      Include /etc/coraza-spoa/plugins/*-after.conf
+
+    # HAProxy configured to send requests only, that means no cache required
+    # NOTE: there are still some memory & caching issues, so use this with care
+    no_response_check: true
+
+    # The transaction cache lifetime in milliseconds (60000ms = 60s)
+    transaction_ttl_ms: 60000
+    # The maximum number of transactions which can be cached
+    transaction_active_limit: 100000
+
+    # The log level configuration, one of: debug/info/warn/error/panic/fatal
+    log_level: info
+    # The log file path
+    log_file: /var/log/coraza-spoa/coraza-agent.log
+
+  example1.com:
+    # Get the coraza.conf from https://github.com/corazawaf/coraza
+    #
+    # Download the OWASP CRS from https://github.com/coreruleset/coreruleset/releases
+    # and copy crs-setup.conf & the rules, plugins directories to /etc/coraza-spoa
+    directives: |
+      Include /etc/coraza-spoa/sites/example1.com/coraza.conf
+      Include /etc/coraza-spoa/sites/example1.com/crs-setup.conf
+      Include /etc/coraza-spoa/sites/example1.com/plugins/*-config.conf
+      Include /etc/coraza-spoa/sites/example1.com/plugins/*-before.conf
+      Include /etc/coraza-spoa/sites/example1.com/rules/*.conf
+      Include /etc/coraza-spoa/sites/example1.com/plugins/*-after.conf
+
+    # HAProxy configured to send requests only, that means no cache required
+    # NOTE: there are still some memory & caching issues, so use this with care
+    no_response_check: true
+
+    # The transaction cache lifetime in milliseconds (60000ms = 60s)
+    transaction_ttl_ms: 60000
+    # The maximum number of transactions which can be cached
+    transaction_active_limit: 100000
+
+    # The log level configuration, one of: debug/info/warn/error/panic/fatal
+    log_level: info
+    # The log file path
+    log_file: /var/log/coraza-spoa/coraza-agent-example1.com.log
+
+  example2.com:
+    # Get the coraza.conf from https://github.com/corazawaf/coraza
+    #
+    # Download the OWASP CRS from https://github.com/coreruleset/coreruleset/releases
+    # and copy crs-setup.conf & the rules, plugins directories to /etc/coraza-spoa
+    directives: |
+      Include /etc/coraza-spoa/sites/example2.com/coraza.conf
+      Include /etc/coraza-spoa/sites/example2.com/crs-setup.conf
+      Include /etc/coraza-spoa/sites/example2.com/plugins/*-config.conf
+      Include /etc/coraza-spoa/sites/example2.com/plugins/*-before.conf
+      Include /etc/coraza-spoa/sites/example2.com/rules/*.conf
+      Include /etc/coraza-spoa/sites/example2.com/plugins/*-after.conf
+
+    # HAProxy configured to send requests only, that means no cache required
+    # NOTE: there are still some memory & caching issues, so use this with care
+    no_response_check: true
+
+    # The transaction cache lifetime in milliseconds (60000ms = 60s)
+    transaction_ttl_ms: 60000
+    # The maximum number of transactions which can be cached
+    transaction_active_limit: 100000
+
+    # The log level configuration, one of: debug/info/warn/error/panic/fatal
+    log_level: info
+    # The log file path
+    log_file: /var/log/coraza-spoa/coraza-agent-example2.com.log
